@@ -3,14 +3,14 @@ package entities;
 import controllers.*;
 import core.CollisionController;
 import core.ICollidable;
-import core.Updater;
 import enums.CollisionsType;
 import enums.EnemyType;
 import events.EventBus;
 import events.ScoreEvent;
+import factories.IFactory;
 import models.EnemyModel;
-import models.SpaceShipModel;
-import spawners.BulletSpawner;
+import params.EnemyControllerParam;
+import spawners.ExplosionSpawner;
 import views.BaseView;
 
 import java.awt.*;
@@ -22,15 +22,17 @@ public class Enemy implements ICollidable {
     private final EventBus eventBus;
     private final CollisionController collisionController;
     private final CollisionsType collisionsType;
-    private final BulletSpawner bulletSpawner;
+    private final ExplosionSpawner explosionSpawner;
 
-    public Enemy(EventBus eventBus, Updater updater, EnemyType type, SpaceShipModel shipModel, CollisionController collisionController, BulletSpawner bulletSpawner) {
+    public Enemy(IFactory<EnemyController, EnemyControllerParam>  controllerFactory,
+                 EnemyType type, IFactory<BaseView, EnemyType> viewFactory, CollisionController collisionController,
+                 EventBus eventBus, ExplosionSpawner explosionSpawner) {
         model = new EnemyModel(type);
-        this.eventBus = eventBus;
         this.collisionController = collisionController;
-        this.bulletSpawner = bulletSpawner;
-        controller = createController(type, eventBus, updater, shipModel);
-        this.view = createView(type);
+        this.eventBus = eventBus;
+        this.explosionSpawner = explosionSpawner;
+        controller = controllerFactory.create(new EnemyControllerParam(type, this));
+        this.view = viewFactory.create(type);
         collisionsType = CollisionsType.ENEMY_SHIP;
     }
 
@@ -40,9 +42,7 @@ public class Enemy implements ICollidable {
     }
 
     @Override
-    public CollisionsType getType() {
-        return collisionsType;
-    }
+    public CollisionsType getType() { return collisionsType; }
 
     @Override
     public void onCollisionEnter(ICollidable other) {
@@ -52,21 +52,10 @@ public class Enemy implements ICollidable {
             model.setHp(model.getHp() - 1);
         }
         if (model.getHp() <= 0 && model.isActive()) {
+            explosionSpawner.spawn(model.getX() + 8, model.getY() + 8, (e) -> {});
             eventBus.publish(new ScoreEvent());
             deactivate();
         }
-    }
-
-    public EnemyModel getModel() {
-        return model;
-    }
-
-    public EnemyController getController() {
-        return controller;
-    }
-
-    public BaseView getView() {
-        return view;
     }
 
     public void deactivate(){
@@ -74,39 +63,9 @@ public class Enemy implements ICollidable {
         collisionController.removeCollidable(this);
     }
 
-    private EnemyController createController(EnemyType type, EventBus eventBus, Updater updater, SpaceShipModel shipModel) {
-        switch (type){
-            case BASIC -> {
-                return new EnemyBasicController(this, eventBus, updater, shipModel);
-            }
-            case SHOOTER -> {
-                return new EnemyShooterController(this, eventBus, updater, shipModel, bulletSpawner);
-            }
-            case MOVER -> {
-                return new EnemyMoverController(this, eventBus, updater, shipModel, bulletSpawner);
-            }
-            case BOSS -> {
-                return new EnemyBossController(this, eventBus, updater, shipModel, bulletSpawner);
-            }
-        }
-        return null;
-    }
+    public EnemyModel getModel() { return model; }
 
-    private BaseView createView(EnemyType type) {
-        switch (type){
-            case BASIC -> {
-                return new BaseView("/enemy1.png", 40, 40);
-            }
-            case SHOOTER -> {
-                return new BaseView("/enemy2.png", 40, 40);
-            }
-            case MOVER -> {
-                return new BaseView("/enemy3.png", 40, 40);
-            }
-            case BOSS -> {
-                return new BaseView("/boss.png", 120, 120);
-            }
-        }
-        return null;
-    }
+    public EnemyController getController() { return controller; }
+
+    public BaseView getView() { return view; }
 }

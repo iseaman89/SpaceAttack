@@ -8,14 +8,13 @@ import events.RepaintEvent;
 import models.SpaceModel;
 import models.SpaceShipModel;
 import params.BulletsParam;
+import pools.ExplosionPool;
 import pools.IPool;
-import ui.Animation;
-import ui.ShipAnimation;
+import ui.animation.Animation;
+import ui.animation.ShipAnimation;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SpacePanel extends JPanel {
@@ -29,6 +28,7 @@ public class SpacePanel extends JPanel {
     private final EventBus eventBus;
     private final GameOverPanel gameOverPanel;
     private final Animation engineAnimation;
+    private final ExplosionPool explosionPool;
 
     private final Consumer<RepaintEvent> repaintHandler = e -> repaint();
     private final BaseView hearthView;
@@ -36,7 +36,7 @@ public class SpacePanel extends JPanel {
 
     public SpacePanel(ShipAnimation shipAnimation, SpaceShipModel shipModel, BaseView spaceView,
                       SpaceModel spaceModel, SpaceModel spaceModel2, IPool<Bullet, BulletsParam>  bulletPool,
-                      IPool<Enemy, EnemyType> enemyPool, EventBus eventBus, GameOverPanel gameOverPanel, Animation engineAnimation){
+                      IPool<Enemy, EnemyType> enemyPool, EventBus eventBus, GameOverPanel gameOverPanel, Animation engineAnimation, ExplosionPool explosionPool){
         this.shipAnimation = shipAnimation;
         this.shipModel = shipModel;
         this.spaceView = spaceView;
@@ -47,26 +47,23 @@ public class SpacePanel extends JPanel {
         this.eventBus = eventBus;
         this.gameOverPanel = gameOverPanel;
         this.engineAnimation = engineAnimation;
+        this.explosionPool = explosionPool;
 
         hearthView = new BaseView("/hearth.png", 16, 16);
         customFont = new MainFont(18).getFont();
 
-        setLayout(new OverlayLayout(this)); // щоб панелі накладалися
+        setLayout(new OverlayLayout(this));
 
 
 
-        add(gameOverPanel); // поверх
+        add(gameOverPanel);
 
     }
 
 
-    public void subscribe() {
-        eventBus.subscribe(RepaintEvent.class, repaintHandler);
-    }
+    public void subscribe() { eventBus.subscribe(RepaintEvent.class, repaintHandler); }
 
-    public void unsubscribe() {
-        eventBus.unsubscribe(RepaintEvent.class, repaintHandler);
-    }
+    public void unsubscribe() { eventBus.unsubscribe(RepaintEvent.class, repaintHandler); }
 
     @Override
     protected void paintComponent(Graphics g){
@@ -76,8 +73,8 @@ public class SpacePanel extends JPanel {
         g.drawImage(spaceView.getSprite(), (int)spaceModel2.getX(), (int)spaceModel2.getY(), this);
 
         for (var b : bulletPool.getPooledObj()){
-            if (!b.getBulletModel().isActive()) continue;
-            g.drawImage(b.getView().getSprite(), (int)b.getBulletModel().getX(), (int)b.getBulletModel().getY(), this);
+            if (!b.getModel().isActive()) continue;
+            g.drawImage(b.getView().getSprite(), (int)b.getModel().getX(), (int)b.getModel().getY(), this);
         }
 
         for (var e : enemyPool.getPooledObj()){
@@ -85,11 +82,15 @@ public class SpacePanel extends JPanel {
             g.drawImage(e.getView().getSprite(), (int)e.getModel().getX(), (int)e.getModel().getY(), this);
         }
 
-        g.drawImage(shipAnimation.getSprite(), (int)shipModel.getX(), (int)shipModel.getY(), this);
-        g.drawImage(engineAnimation.getCurrentFrame().getSprite(), (int)shipModel.getX() + 20 , (int)shipModel.getY() + 48, this);
+        if (shipModel.isActive()) g.drawImage(shipAnimation.getSprite(), (int)shipModel.getX(), (int)shipModel.getY(), this);
+        if (shipModel.isActive()) g.drawImage(engineAnimation.getCurrentFrame().getSprite(), (int)shipModel.getX() + 20 , (int)shipModel.getY() + 48, this);
 
         for (var i = 1; i <= shipModel.getHp(); i++){
             g.drawImage(hearthView.getSprite(), 30 + 24 * i, 40, this);
+        }
+
+        for (var e : explosionPool.getAll()) {
+            e.draw(g);
         }
 
         drawScore(g);
@@ -110,11 +111,7 @@ public class SpacePanel extends JPanel {
         gameOverPanel.fadeIn();
     }
 
-    public void hideGameOver() {
-        gameOverPanel.hidePanel();
-    }
+    public void hideGameOver() { gameOverPanel.hidePanel(); }
 
-    public GameOverPanel getGameOverPanel() {
-        return gameOverPanel;
-    }
+    public GameOverPanel getGameOverPanel() { return gameOverPanel; }
 }

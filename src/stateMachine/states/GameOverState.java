@@ -21,6 +21,10 @@ public class GameOverState implements IState {
         mainMenuListener = e -> goToMainMenu();
     }
 
+    private void restartGame() { stateMachine.setState(GameState.class); }
+
+    private void goToMainMenu() { stateMachine.setState(MainMenuState.class); }
+
     @Override
     public void enter() {
         spacePanel.showGameOver();
@@ -33,13 +37,5 @@ public class GameOverState implements IState {
         spacePanel.hideGameOver();
         spacePanel.getGameOverPanel().getRestartButton().removeActionListener(restartListener);
         spacePanel.getGameOverPanel().getMainMenuButton().removeActionListener(mainMenuListener);
-    }
-
-    private void restartGame(){
-        stateMachine.setState(GameState.class);
-    }
-
-    private void goToMainMenu() {
-        stateMachine.setState(MainMenuState.class);
     }
 }

@@ -1,30 +1,33 @@
 package factories;
 
+import controllers.EnemyController;
 import core.CollisionController;
-import core.Updater;
 import entities.Enemy;
 import enums.EnemyType;
 import events.EventBus;
-import models.SpaceShipModel;
-import spawners.BulletSpawner;
+import params.EnemyControllerParam;
+import spawners.ExplosionSpawner;
+import views.BaseView;
 
 public class EnemyFactory implements IFactory<Enemy, EnemyType>{
     private final EventBus eventBus;
-    private final Updater updater;
-    private final SpaceShipModel shipModel;
     private final CollisionController collisionController;
-    private final BulletSpawner bulletSpawner;
+    private final ExplosionSpawner explosionSpawner;
+    private final IFactory<EnemyController, EnemyControllerParam> controllerFactory;
+    private final IFactory<BaseView, EnemyType> viewFactory;
 
-    public EnemyFactory(EventBus eventBus, Updater updater, SpaceShipModel shipModel, CollisionController collisionController, BulletSpawner bulletSpawner) {
+    public EnemyFactory(EventBus eventBus, CollisionController collisionController, ExplosionSpawner explosionSpawner,
+                        IFactory<EnemyController, EnemyControllerParam> controllerFactory,
+                        IFactory<BaseView, EnemyType> viewFactory) {
         this.eventBus = eventBus;
-        this.updater = updater;
-        this.shipModel = shipModel;
         this.collisionController = collisionController;
-        this.bulletSpawner = bulletSpawner;
+        this.explosionSpawner = explosionSpawner;
+        this.controllerFactory = controllerFactory;
+        this.viewFactory = viewFactory;
     }
 
     @Override
     public Enemy create(EnemyType type) {
-        return new Enemy(eventBus, updater, type, shipModel, collisionController, bulletSpawner);
+        return new Enemy(controllerFactory, type, viewFactory, collisionController, eventBus, explosionSpawner);
     }
 }

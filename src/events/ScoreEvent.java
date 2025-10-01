@@ -1,4 +1,3 @@
 package events;
 
-public class ScoreEvent {
-}
+public class ScoreEvent {}

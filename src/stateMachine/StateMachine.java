@@ -22,8 +22,4 @@ public class StateMachine {
         currentState = state;
         currentState.enter();
     }
-
-    public IState getCurrentState() {
-        return currentState;
-    }
 }

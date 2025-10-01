@@ -115,13 +115,13 @@ public class WaveController implements IUpdateListener {
                         new EnemySpawnParam(EnemyType.SHOOTER, 2, 2, 0, 900, 200)
                 )),
                 new Wave(List.of(
-                        new EnemySpawnParam(EnemyType.BOSS, 0, 80,100, 450, 120)
+                        new EnemySpawnParam(EnemyType.BOSS, 0, 120,110, 450, 120)
                 ))
         );
     }
 
     public void reset() {
-        currentWaveIndex = 3;
+        currentWaveIndex = 0;
         timer = 0;
         spawned.clear();
     }
@@ -136,14 +136,14 @@ public class WaveController implements IUpdateListener {
         timer += deltaTime;
         var wave = waves.get(currentWaveIndex);
 
-        for (var spawn : wave.getSpawns()) {
+        for (var spawn : wave.spawns()) {
             if (!spawned.contains(spawn) && timer >= 2) {
                 enemySpawner.spawn(spawn);
                 spawned.add(spawn);
             }
         }
 
-        if (spawned.size() == wave.getSpawns().size() && enemyPool.getPooledObj().stream().noneMatch(e -> e.getModel().isActive())) {
+        if (spawned.size() == wave.spawns().size() && enemyPool.getPooledObj().stream().noneMatch(e -> e.getModel().isActive())) {
             currentWaveIndex++;
             timer = 0;
             spawned.clear();

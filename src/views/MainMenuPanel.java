@@ -4,7 +4,6 @@ import models.SpaceModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 public class MainMenuPanel extends JPanel {
     private final BaseView spaceView;
@@ -19,7 +18,6 @@ public class MainMenuPanel extends JPanel {
 
         playButton = new JButton();
 
-        //setOpaque(true);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setAlignmentX(.5f);
         setAlignmentY(.5f);
@@ -34,29 +32,19 @@ public class MainMenuPanel extends JPanel {
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         add(title);
-
         add(Box.createRigidArea(new Dimension(0, 30))); // відступ
 
-        // Кнопка Play з картинкою
         ImageIcon icon = new ImageIcon("resources/play_button.png");
-
-// Масштабуємо картинку
         Image scaled = icon.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
         ImageIcon scaledIcon = new ImageIcon(scaled);
 
-// Встановлюємо у кнопку
         playButton.setIcon(scaledIcon);
-
-// Прибираємо фон, щоб була тільки картинка
         playButton.setBorderPainted(false);
         playButton.setContentAreaFilled(false);
         playButton.setFocusPainted(false);
-
-// (опціонально) виставляємо той же розмір
         playButton.setPreferredSize(new Dimension(64, 64));
         playButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        //playButton.addActionListener(e -> onPlay.run());
         add(playButton);
     }
 
@@ -68,7 +56,5 @@ public class MainMenuPanel extends JPanel {
         g.drawImage(spaceView.getSprite(), (int)spaceModel2.getX(), (int)spaceModel2.getY(), this);
     }
 
-    public JButton getPlayButton() {
-        return playButton;
-    }
+    public JButton getPlayButton() { return playButton; }
 }

@@ -29,17 +29,11 @@ public class EnemyPool implements IPool<Enemy, EnemyType>{
     }
 
     @Override
-    public void deactivate(Enemy enemy) {
-        enemy.getModel().setActive(false);
-    }
+    public void deactivate(Enemy enemy) { enemy.getModel().setActive(false); }
 
     @Override
-    public void deactivateAll() {
-        enemies.forEach(Enemy::deactivate);
-    }
+    public void deactivateAll() { enemies.forEach(Enemy::deactivate); }
 
     @Override
-    public List<Enemy> getPooledObj() {
-        return enemies;
-    }
+    public List<Enemy> getPooledObj() { return enemies; }
 }

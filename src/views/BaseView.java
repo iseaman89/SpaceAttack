@@ -23,15 +23,7 @@ public class BaseView {
         );
     }
 
-    public Image getSprite() {
-        return sprite;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
+    public Image getSprite() { return sprite; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
 }

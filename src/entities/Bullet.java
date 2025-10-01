@@ -7,46 +7,32 @@ import core.Updater;
 import enums.BulletType;
 import enums.CollisionsType;
 import events.EventBus;
+import factories.IFactory;
 import models.BulletModel;
 import views.BaseView;
 
 import java.awt.*;
 
 public class Bullet implements ICollidable {
-    private final BulletModel bulletModel;
-    private final BulletController bulletController;
-    private final BaseView bulletView;
+    private final BulletModel model;
+    private final BulletController controller;
+    private final BaseView view;
     private final CollisionController collisionController;
     private final CollisionsType collisionsType;
     private final BulletType bulletType;
 
-    public Bullet(EventBus eventBus, Updater updater, int speed, CollisionController collisionController, CollisionsType collisionsType, BulletType bulletType){
-        bulletModel = new BulletModel(speed);
+    public Bullet(EventBus eventBus, Updater updater, int speed, CollisionController collisionController, IFactory<BaseView, BulletType> viewFactory, CollisionsType collisionsType, BulletType bulletType){
+        model = new BulletModel(speed);
         this.collisionController = collisionController;
         this.bulletType = bulletType;
-        bulletController = new BulletController(this, eventBus, updater);
-        bulletView = createView();
+        controller = new BulletController(this, eventBus, updater);
+        view = viewFactory.create(bulletType);
         this.collisionsType = collisionsType;
-    }
-
-    private BaseView createView() {
-        switch (bulletType) {
-            case SHIP -> {
-                return new BaseView("/bullet.png", 16, 24);
-            }
-            case ENEMY -> {
-                return new BaseView("/bullet_enemy.png", 8, 16);
-            }
-            case BOSS -> {
-                return new BaseView("/bullet_boss.png", 32, 32);
-            }
-        }
-        return null;
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)bulletModel.getX(), (int)bulletModel.getY(), bulletView.getWidth(), bulletView.getHeight());
+        return new Rectangle((int) model.getX(), (int) model.getY(), view.getWidth(), view.getHeight());
     }
 
     @Override
@@ -58,24 +44,27 @@ public class Bullet implements ICollidable {
     public void onCollisionEnter(ICollidable other) {
         if (other.getType() == CollisionsType.SHIP && bulletType == BulletType.SHIP) return;
         if (other.getType() == CollisionsType.ENEMY_SHIP && bulletType == BulletType.ENEMY) return;
+        if (other.getType() == CollisionsType.ENEMY_SHIP && bulletType == BulletType.BOSS) return;
+        if (other.getType() == CollisionsType.BULLET || other.getType() == CollisionsType.ENEMY_BULLET) return;
+
         deactivate();
     }
 
     public void deactivate() {
-        bulletController.deactivate();
+        controller.deactivate();
         collisionController.removeCollidable(this);
     }
 
-    public BulletModel getBulletModel() {
-        return bulletModel;
+    public BulletModel getModel() {
+        return model;
     }
 
-    public BulletController getBulletController() {
-        return bulletController;
+    public BulletController getController() {
+        return controller;
     }
 
     public BaseView getView() {
-        return bulletView;
+        return view;
     }
 
     public BulletType getBulletType() {

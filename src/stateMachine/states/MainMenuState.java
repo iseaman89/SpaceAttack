@@ -21,6 +21,8 @@ public class MainMenuState implements IState {
         playListener = e -> play();
     }
 
+    private void play() { stateMachine.setState(GameState.class); }
+
     @Override
     public void enter() {
         mainWindow.showPanel("menu");
@@ -28,11 +30,5 @@ public class MainMenuState implements IState {
     }
 
     @Override
-    public void exit() {
-        mainMenuPanel.getPlayButton().removeActionListener(playListener);
-    }
-
-    private void play(){
-        stateMachine.setState(GameState.class);
-    }
+    public void exit() { mainMenuPanel.getPlayButton().removeActionListener(playListener); }
 }

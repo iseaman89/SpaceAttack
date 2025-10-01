@@ -7,11 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class CollisionController implements IUpdateListener {
     private final List<ICollidable> collidables = new CopyOnWriteArrayList<>();
 
-    @Override
-    public void update(double deltaTime) {
-        checkCollisions();
-    }
-
     private void checkCollisions() {
         var snapshot = new ArrayList<>(collidables);
 
@@ -29,11 +24,10 @@ public class CollisionController implements IUpdateListener {
         }
     }
 
-    public void addCollidable(ICollidable collidable) {
-        collidables.add(collidable);
-    }
+    @Override
+    public void update(double deltaTime) { checkCollisions(); }
 
-    public void removeCollidable(ICollidable collidable) {
-        collidables.remove(collidable);
-    }
+    public void addCollidable(ICollidable collidable) { collidables.add(collidable); }
+
+    public void removeCollidable(ICollidable collidable) { collidables.remove(collidable); }
 }

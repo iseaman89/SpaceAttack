@@ -10,8 +10,8 @@ import events.ScoreEvent;
 import models.SpaceShipModel;
 import params.BulletsParam;
 import spawners.BulletSpawner;
-import ui.Animation;
-import ui.ShipAnimation;
+import ui.animation.Animation;
+import ui.animation.ShipAnimation;
 import views.MainWindow;
 
 import java.util.function.Consumer;
@@ -27,7 +27,6 @@ public class SpaceShipController implements IUpdateListener {
     private final Consumer<ScoreEvent> scoreHandler = e -> updateScore();
 
     private double lastShootTime = 0;
-    private final double cooldown = 0.3;
     private double startTime = 0;
 
     public SpaceShipController(SpaceShipModel shipModel, ShipAnimation shipAnimation, EventBus eventBus, InputController inputController, BulletSpawner bulletSpawner, MainWindow mainWindow, Animation engineAnimation) {
@@ -38,28 +37,6 @@ public class SpaceShipController implements IUpdateListener {
         this.bulletSpawner = bulletSpawner;
         this.mainWindow = mainWindow;
         this.engineAnimation = engineAnimation;
-    }
-
-    @Override
-    public void update(double deltaTime) {
-        startTime += deltaTime;
-
-        engineAnimation.update(deltaTime);
-
-        if (inputController.isLeftPressed()) moveLeft(deltaTime);
-        else if (inputController.isRightPressed()) moveRight(deltaTime);
-        else shipAnimation.setCurrentState(SpaceShipAnimationState.IDLE);
-        if (inputController.isUpPressed()) moveUp(deltaTime);
-        if (inputController.isDownPressed()) moveDown(deltaTime);
-        shoot();
-    }
-
-    public void subscribe() {
-        eventBus.subscribe(ScoreEvent.class, scoreHandler);
-    }
-
-    public void unsubscribe() {
-        eventBus.unsubscribe(ScoreEvent.class, scoreHandler);
     }
 
     private void moveLeft(double deltaTime){
@@ -93,14 +70,34 @@ public class SpaceShipController implements IUpdateListener {
     }
 
     private void shoot(){
-        if (startTime - lastShootTime >= cooldown){
+        if (startTime - lastShootTime >= .7){
             bulletSpawner.spawn(new BulletsParam(250, CollisionsType.BULLET, BulletType.SHIP, shipModel.getX(), shipModel.getY(), -1));
             bulletSpawner.spawn(new BulletsParam(250, CollisionsType.BULLET, BulletType.SHIP, shipModel.getX() + 32, shipModel.getY(), -1));
             lastShootTime = startTime;
         }
     }
 
-    private void updateScore() {
-        shipModel.setScore(shipModel.getScore() + 100);
+    private void updateScore() { shipModel.setScore(shipModel.getScore() + 100); }
+
+    @Override
+    public void update(double deltaTime) {
+        startTime += deltaTime;
+
+        engineAnimation.update(deltaTime);
+
+        if (inputController.isLeftPressed()) moveLeft(deltaTime);
+        else if (inputController.isRightPressed()) moveRight(deltaTime);
+        else shipAnimation.setCurrentState(SpaceShipAnimationState.IDLE);
+        if (inputController.isUpPressed()) moveUp(deltaTime);
+        if (inputController.isDownPressed()) moveDown(deltaTime);
+        shoot();
+    }
+
+    public void subscribe() {
+        eventBus.subscribe(ScoreEvent.class, scoreHandler);
+    }
+
+    public void unsubscribe() {
+        eventBus.unsubscribe(ScoreEvent.class, scoreHandler);
     }
 }

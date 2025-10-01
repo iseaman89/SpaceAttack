@@ -1,4 +1,3 @@
 package events;
 
-public class RepaintEvent {
-}
+public class RepaintEvent {}

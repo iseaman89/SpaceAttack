@@ -8,7 +8,6 @@ public class MainFont {
     private final Font font;
 
     public MainFont(int size) {
-
         try {
              font = Font.createFont(
                     Font.TRUETYPE_FONT,
@@ -19,7 +18,5 @@ public class MainFont {
         }
     }
 
-    public Font getFont() {
-        return font;
-    }
+    public Font getFont() { return font; }
 }

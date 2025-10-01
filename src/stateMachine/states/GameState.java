@@ -10,8 +10,8 @@ import enums.EnemyType;
 import gameplay.WaveController;
 import params.BulletsParam;
 import pools.IPool;
+import spawners.ExplosionSpawner;
 import stateMachine.IState;
-import stateMachine.StateMachine;
 import views.MainWindow;
 import views.SpacePanel;
 
@@ -24,8 +24,9 @@ public class GameState implements IState {
     private final SpacePanel spacePanel;
     private final IPool<Bullet, BulletsParam> bulletPool;
     private final IPool<Enemy, EnemyType> enemyPool;
+    private final ExplosionSpawner explosionSpawner;
 
-    public GameState(MainWindow mainWindow, Updater updater, SpaceShip ship, WaveController waveController, CollisionController collisionController, SpacePanel spacePanel, IPool<Bullet, BulletsParam> bulletPool, IPool<Enemy, EnemyType> enemyPool) {
+    public GameState(MainWindow mainWindow, Updater updater, SpaceShip ship, WaveController waveController, CollisionController collisionController, SpacePanel spacePanel, IPool<Bullet, BulletsParam> bulletPool, IPool<Enemy, EnemyType> enemyPool, ExplosionSpawner explosionSpawner) {
         this.mainWindow = mainWindow;
         this.updater = updater;
         this.ship = ship;
@@ -34,6 +35,7 @@ public class GameState implements IState {
         this.spacePanel = spacePanel;
         this.bulletPool = bulletPool;
         this.enemyPool = enemyPool;
+        this.explosionSpawner = explosionSpawner;
     }
 
     private void startGame() {
@@ -50,6 +52,7 @@ public class GameState implements IState {
         updater.add(ship.getController());
         updater.add(waveController);
         updater.add(collisionController);
+        updater.add(explosionSpawner);
         ship.getController().subscribe();
         spacePanel.subscribe();
     }
@@ -59,6 +62,7 @@ public class GameState implements IState {
         updater.remove(ship.getController());
         updater.remove(waveController);
         updater.remove(collisionController);
+        updater.remove(explosionSpawner);
         ship.getController().unsubscribe();
         spacePanel.unsubscribe();
     }

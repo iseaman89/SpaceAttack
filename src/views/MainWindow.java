@@ -25,7 +25,5 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    public void showPanel(String name){
-        layout.show(root, name);
-    }
+    public void showPanel(String name){ layout.show(root, name); }
 }

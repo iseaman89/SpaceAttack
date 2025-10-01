@@ -16,7 +16,6 @@ public class InputController {
 
     public InputController(SpacePanel spacePanel){
         this.spacePanel = spacePanel;
-
         setupKeys();
     }
 
@@ -118,27 +117,15 @@ public class InputController {
         });
     }
 
-    public boolean isLeftPressed() {
-        return leftPressed;
-    }
+    public boolean isLeftPressed() { return leftPressed; }
 
-    public boolean isRightPressed() {
-        return rightPressed;
-    }
+    public boolean isRightPressed() { return rightPressed; }
 
-    public boolean isUpPressed() {
-        return upPressed;
-    }
+    public boolean isUpPressed() { return upPressed; }
 
-    public boolean isDownPressed() {
-        return downPressed;
-    }
+    public boolean isDownPressed() { return downPressed; }
 
-    public boolean isSpacePressed() {
-        return spacePressed;
-    }
+    public boolean isSpacePressed() { return spacePressed; }
 
-    public void setSpacePressed(boolean spacePressed) {
-        this.spacePressed = spacePressed;
-    }
+    public void setSpacePressed(boolean spacePressed) { this.spacePressed = spacePressed; }
 }

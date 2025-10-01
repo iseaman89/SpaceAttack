@@ -1,24 +1,19 @@
 package models;
 
-public class BaseModel {
+public class ExplosionModel {
     private double x;
     private double y;
-    private int speed;
     private boolean active;
 
-    public BaseModel(double x, double y, int speed){
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
+    public ExplosionModel() {
+        this.active = false;
     }
 
     public double getX() { return x; }
     public double getY() { return y; }
-    public int getSpeed() { return speed; }
     public boolean isActive() { return active; }
 
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
-    public void setSpeed(int speed) { this.speed = speed; }
     public void setActive(boolean active) { this.active = active; }
 }

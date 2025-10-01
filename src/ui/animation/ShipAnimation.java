@@ -1,4 +1,4 @@
-package ui;
+package ui.animation;
 
 import enums.SpaceShipAnimationState;
 import views.BaseView;
@@ -33,7 +33,5 @@ public class ShipAnimation {
                 : currentState == SpaceShipAnimationState.LEFT ? shipLeft.getHeight() : shipRight.getHeight();
     }
 
-    public void setCurrentState(SpaceShipAnimationState currentState) {
-        this.currentState = currentState;
-    }
+    public void setCurrentState(SpaceShipAnimationState currentState) { this.currentState = currentState; }
 }

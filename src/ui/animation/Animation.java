@@ -1,8 +1,6 @@
-package ui;
+package ui.animation;
 
 import views.BaseView;
-
-import java.awt.image.BufferedImage;
 
 public class Animation {
     private final BaseView[] frames;
@@ -39,17 +37,16 @@ public class Animation {
         }
     }
 
-    public BaseView getCurrentFrame() {
-        return frames[currentFrame];
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
 
     public void reset() {
         currentFrame = 0;
         timer = 0;
         finished = false;
     }
+
+    public BaseView[] getFrames() { return frames; }
+
+    public BaseView getCurrentFrame() { return frames[currentFrame]; }
+
+    public boolean isFinished() { return finished; }
 }

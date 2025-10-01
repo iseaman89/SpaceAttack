@@ -17,15 +17,13 @@ public class GameOverPanel extends JPanel {
         setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        // завантажуємо бекграунд
         backgroundImage = new ImageIcon(Objects.requireNonNull(
                 getClass().getResource("/bg_gameover.png")
         )).getImage();
 
-        // текст Game Over
         JLabel title = new JLabel("GAME OVER", SwingConstants.CENTER);
         title.setFont(customFont.deriveFont(Font.BOLD, 28f));
-        title.setForeground(Color.BLACK);
+        title.setForeground(Color.WHITE);
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
@@ -33,11 +31,9 @@ public class GameOverPanel extends JPanel {
         scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // кнопка Restart
         restartButton = new JButton();
         styleButton(restartButton, "/play_button.png");
 
-        // кнопка Main Menu
         mainMenuButton = new JButton();
         styleButton(mainMenuButton, "/menu_button.png");
 
@@ -47,7 +43,6 @@ public class GameOverPanel extends JPanel {
         add(Box.createVerticalStrut(20));
         add(scoreLabel);
 
-// панель для кнопок у ряд
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setOpaque(false); // щоб фон був прозорий
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
@@ -82,7 +77,6 @@ public class GameOverPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // прозорість
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
 
         int w = getWidth();
@@ -93,17 +87,11 @@ public class GameOverPanel extends JPanel {
         g2d.dispose();
     }
 
-    public void setScore(int score) {
-        scoreLabel.setText("Score: " + score);
-    }
+    public void setScore(int score) { scoreLabel.setText("Score: " + score); }
 
-    public JButton getRestartButton() {
-        return restartButton;
-    }
+    public JButton getRestartButton() { return restartButton; }
 
-    public JButton getMainMenuButton() {
-        return mainMenuButton;
-    }
+    public JButton getMainMenuButton() { return mainMenuButton; }
 
     public void fadeIn() {
         setVisible(true);
@@ -124,7 +112,5 @@ public class GameOverPanel extends JPanel {
         fadeTimer.start();
     }
 
-    public void hidePanel() {
-        setVisible(false);
-    }
+    public void hidePanel() { setVisible(false); }
 }

@@ -20,18 +20,12 @@ public abstract class EnemyController implements IUpdateListener {
         this.shipModel = shipModel;
     }
 
+    public abstract void reset();
+
     public void deactivate() {
         enemy.getModel().setActive(false);
         updater.remove(this);
     }
 
-    public abstract void reset();
-
-    public double getAttackTime() {
-        return attackTime;
-    }
-
-    public void setAttackTime(double attackTime) {
-        this.attackTime = attackTime;
-    }
+    public void setAttackTime(double attackTime) { this.attackTime = attackTime; }
 }

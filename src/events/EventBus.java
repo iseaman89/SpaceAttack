@@ -12,15 +12,11 @@ public class EventBus {
 
     public <T> void unsubscribe(Class<T> eventType, Consumer<T> listener) {
         var list = listeners.get(eventType);
-        if (list != null) {
-            list.remove(listener);
-        }
+        if (list != null) list.remove(listener);
     }
 
     public <T> void publish(T event) {
         var list = listeners.getOrDefault(event.getClass(), List.of());
-        for (var l : new ArrayList<>(list)) {
-            ((Consumer<T>) l).accept(event);
-        }
+        for (var l : new ArrayList<>(list)) ((Consumer<T>) l).accept(event);
     }
 }

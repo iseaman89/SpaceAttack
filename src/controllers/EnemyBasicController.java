@@ -6,8 +6,6 @@ import events.EventBus;
 import events.RepaintEvent;
 import models.SpaceShipModel;
 
-import java.util.Random;
-
 public class EnemyBasicController extends EnemyController{
     private double dirX;
     private double dirY;
@@ -16,13 +14,6 @@ public class EnemyBasicController extends EnemyController{
 
     public EnemyBasicController(Enemy enemy, EventBus eventBus, Updater updater, SpaceShipModel shipModel) {
         super(enemy, eventBus, updater, shipModel);
-    }
-
-    @Override
-    public void update(double deltaTime){
-        timer += deltaTime;
-
-        if (timer >= attackTime) move(deltaTime);
     }
 
     private void move(double deltaTime){
@@ -41,6 +32,12 @@ public class EnemyBasicController extends EnemyController{
         dirX = dx / length;
         dirY = dy / length;
         inAttack = true;
+    }
+
+    @Override
+    public void update(double deltaTime){
+        timer += deltaTime;
+        if (timer >= attackTime) move(deltaTime);
     }
 
     @Override
